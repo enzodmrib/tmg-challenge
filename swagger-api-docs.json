@@ -1,0 +1,257 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "TMG - Challenge",
+    "description": "This is the documentation of the contracts and endpoints of the challenge",
+    "contact": {
+      "email": "enzorib2@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "stack",
+      "description": "Stack Endpoints"
+    },
+    {
+      "name": "store",
+      "description": "Store Endpoints"
+    }
+  ],
+  "paths": {
+    "/stack/item": {
+      "post": {
+        "tags": [
+          "stack"
+        ],
+        "summary": "Add a new item to stack",
+        "description": "Add a new item to stack with determined value",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Stack"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stack/item/pop": {
+      "post": {
+        "tags": [
+          "stack"
+        ],
+        "summary": "Pop item from stack",
+        "description": "Pop the top item value from the stack an return it to the user",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Hello"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Empty Stack error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Stack is Empty!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store/item": {
+      "post": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Add a key value pair to store",
+        "description": "Send a key with any name, containing an object that has a value, and optionally, a ttl (time to live) of this key-value pair",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Store"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation"
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/store/item/{key}": {
+      "get": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Get the value of a determined key",
+        "description": "Send the key as a route parameter, and retrieve the value, if it exists",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "description": "key of the key-value pair",
+            "schema": {
+              "type": "string",
+              "example": "name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "John"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No value found for provided key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "No value was found for this key"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "store"
+        ],
+        "summary": "Delete the value of a determined key",
+        "description": "Remove a value from the store by the provided key in the route parameters",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "description": "key of the key-value pair",
+            "schema": {
+              "type": "string",
+              "example": "name"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful operation"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Stack": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "example": "Hello"
+          }
+        }
+      },
+      "Store": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string"
+            },
+            "ttl": {
+              "type": "number",
+              "description": "Time to live in seconds (optional)"
+            }
+          },
+          "required": [
+            "value"
+          ]
+        },
+        "example": {
+          "key": {
+            "value": "someValue",
+            "ttl": 5
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Validation Error"
+          }
+        }
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Internal Server Error"
+          }
+        }
+      }
+    }
+  }
+}

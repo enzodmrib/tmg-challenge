@@ -1,11 +1,16 @@
 import express from 'express'
 import { StackController } from '../controllers/StackController'
+import { validate } from '../middlewares/validate'
+import { z } from 'zod'
 
 export const stackRouter = express.Router()
 
 const stackController = new StackController()
 
-stackRouter.post('/add-to-stack', stackController.addToStack)
+const stackItemSchema = z.object({
+  value: z.string()
+})
 
-stackRouter.get('/get-from-stack', stackController.getFromStack)
+stackRouter.post('/stack/item', validate({ bodySchema: stackItemSchema }), stackController.addToStack)
+stackRouter.post('/stack/item/pop', stackController.getFromStack)
 

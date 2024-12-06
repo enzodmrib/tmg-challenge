@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { StackService } from "./StackService"
-import { EmptyStackError } from "../errors/EmptyStackError"
+import { ApiError } from "../errors/ApiError"
 
 let sut: StackService
 
@@ -29,7 +29,7 @@ describe('Stack Service', () => {
   })
 
   it('Should throw error when tries to pop items from empty stack', () => {
-    expect(sut.pop).toThrow(new EmptyStackError())
+    expect(sut.pop).toThrow(new ApiError(400, 'Stack is Empty!'))
   })
 
   it('Should have the behavior of a LIFO stack', () => {

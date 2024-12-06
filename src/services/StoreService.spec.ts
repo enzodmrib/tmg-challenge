@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StoreService } from "./StoreService";
 import { StackService } from "./StackService";
+import { ApiError } from "../errors/ApiError";
 
 let sut: StoreService
 
@@ -52,9 +53,7 @@ describe('Store Service', () => {
 
     vi.advanceTimersByTime(3000);
 
-    const response = sut.get(key)
-
-    expect(response).toBeUndefined()
+    expect(() => sut.get(key)).toThrow(new ApiError(404, 'No value was found for this key'))
   })
 
   it('Should be able to remove value by key from store', () => {

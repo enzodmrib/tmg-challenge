@@ -1,14 +1,9 @@
-import { ItemNotFoundError } from "../errors/ItemNotFoundError"
-import { RequiredValueError } from "../errors/RequiredValueError"
+import { ApiError } from "../errors/ApiError"
 
 export class StoreService {
   public store: Record<string, { value: any, expires_in?: number }> = {}
 
   add = (key: string, item: { value: any, ttl?: number }) => {
-    if (!item.value) {
-      throw new RequiredValueError()
-    }
-
     this.store[key] = { value: item.value }
 
     if (item.ttl) {
@@ -20,11 +15,14 @@ export class StoreService {
     const item = this.store[key]
 
     if (!item) {
-      throw new ItemNotFoundError()
+      throw new ApiError(404, 'No value was found for this key')
     }
 
-    if (item.expires_in && (new Date().getTime() > item.expires_in)) {
+    const hasExpired = item.expires_in && (new Date().getTime() > item.expires_in)
+
+    if (hasExpired) {
       this.delete(key)
+      throw new ApiError(404, 'No value was found for this key')
     }
 
     return this.store[key]?.value

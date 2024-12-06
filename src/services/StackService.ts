@@ -1,14 +1,9 @@
-import { EmptyStackError } from "../errors/EmptyStackError"
-import { RequiredValueError } from "../errors/RequiredValueError"
+import { ApiError } from "../errors/ApiError"
 
 export class StackService {
   public stack: any[] = []
 
   add = (value: any) => {
-    if (!value) {
-      throw new RequiredValueError()
-    }
-
     this.stack.push(value)
   }
 
@@ -16,7 +11,7 @@ export class StackService {
     const item = this.stack.pop()
 
     if (!item) {
-      throw new EmptyStackError()
+      throw new ApiError(400, 'Stack is Empty!')
     }
 
     return item
